@@ -6,7 +6,6 @@ import pickle
 import plotly.graph_objects as go
 import plotly.express as px
 
-# Page configuration
 st.set_page_config(
     page_title="Student Dropout Prediction System",
     page_icon="📊",
@@ -14,7 +13,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Professional Corporate CSS - Navy Blue + Gold Theme
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
@@ -29,7 +27,6 @@ st.markdown("""
     }
 
     /* Hide Streamlit branding */
-    #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
 
@@ -341,7 +338,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Voice component
 voice_component = """
 <style>
     body {
@@ -857,7 +853,6 @@ window.addEventListener('load', async function() {
 </script>
 """
 
-# Load models
 @st.cache_resource
 def load_models():
     with open('xgboost_model.pkl', 'rb') as f:
@@ -874,7 +869,6 @@ def load_models():
 def load_dataset():
     return pd.read_csv('cleaned_dataset.csv')
 
-# Professional color scheme for charts - Navy + Gold Theme ONLY
 CHART_COLORS = {
     'primary': '#d4af37',      # Gold (main accent)
     'secondary': '#b8941f',    # Dark gold
@@ -887,7 +881,6 @@ CHART_COLORS = {
     'enrolled': '#94a3b8'      # Light gray for Enrolled (neutral)
 }
 
-# Header
 st.markdown("""
 <div class="main-header">
     <h1>STUDENT DROPOUT PREDICTION SYSTEM</h1>
@@ -895,12 +888,10 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Load models
 try:
     xgb_model, baseline_model, scaler, label_encoder = load_models()
     df = load_dataset()
 
-    # Sidebar
     with st.sidebar:
         st.markdown("<h2 style='color: #d4af37; text-align: center; margin-bottom: 2rem;'>NAVIGATION</h2>", unsafe_allow_html=True)
         page = st.radio("", ["Home", "Prediction", "Voice Input", "Analytics"], label_visibility="collapsed")
@@ -922,7 +913,6 @@ try:
         </div>
         """, unsafe_allow_html=True)
 
-    # Pages
     if page == "Home":
         col1, col2, col3 = st.columns(3)
 
@@ -1017,7 +1007,6 @@ try:
         )
         st.plotly_chart(fig, use_container_width=True)
 
-        # Dataset Attribution
         st.markdown("<h2 class='section-header'>Dataset Information</h2>", unsafe_allow_html=True)
         st.markdown("""
         <div class="info-box">
@@ -1176,7 +1165,6 @@ try:
             submitted = st.form_submit_button("GENERATE PREDICTION", use_container_width=True)
 
             if submitted:
-                # Calculate evaluations as enrolled (common default)
                 curricular_units_1st_sem_evaluations = curricular_units_1st_sem_enrolled
 
                 input_data = pd.DataFrame([[
@@ -1221,7 +1209,6 @@ try:
                 </div>
                 """, unsafe_allow_html=True)
 
-                # Probability distribution
                 prob_df = pd.DataFrame({
                     'Outcome': label_encoder.classes_,
                     'Probability': xgb_proba * 100
@@ -1252,7 +1239,6 @@ try:
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
-                # Risk factors
                 risk_factors = []
                 if tuition_fees == 0:
                     risk_factors.append("Outstanding tuition fees identified")

@@ -197,4 +197,4 @@ For questions or feedback, please contact through the project repository.
 
 ---
 
-**Made with ❤️ for academic excellence and student success**
+**Developed for academic excellence and student success**
