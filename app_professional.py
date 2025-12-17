@@ -888,7 +888,7 @@ st.markdown("""
 
 try:
     xgbmo, basmo, scal, labenco = loadmo()
-    df = loadds()
+    sdps = loadds()
 
     with st.sidebar:
         st.markdown("<h2 style='color: #d4af37; text-align: center; margin-bottom: 2rem;'>NAVIGATION</h2>", unsafe_allow_html=True)
@@ -898,7 +898,7 @@ try:
         st.markdown(f"""
         <div class="professional-card">
             <h3 style='color: #d4af37; text-align: center; margin-bottom: 1rem; font-size: 1.1rem;'>DATASET INFO</h3>
-            <p style='color: #d4af37; text-align: center; font-size: 2rem; font-weight: 900; margin: 0;'>{len(df):,}</p>
+            <p style='color: #d4af37; text-align: center; font-size: 2rem; font-weight: 900; margin: 0;'>{len(sdps):,}</p>
             <p style='color: #94a3b8; text-align: center; font-size: 0.9rem; margin-top: 0.5rem;'>TOTAL STUDENTS</p>
         </div>
         """, unsafe_allow_html=True)
@@ -914,9 +914,9 @@ try:
     if page == "Home":
         col1, col2, col3 = st.columns(3)
 
-        drp_rt = (df['Target'].value_counts().get('Dropout', 0) / len(df) * 100)
-        grd_rt = (df['Target'].value_counts().get('Graduate', 0) / len(df) * 100)
-        enrl_rt = (df['Target'].value_counts().get('Enrolled', 0) / len(df) * 100)
+        drp_rt = (sdps['Target'].value_counts().get('Dropout', 0) / len(sdps) * 100)
+        grd_rt = (sdps['Target'].value_counts().get('Graduate', 0) / len(sdps) * 100)
+        enrl_rt = (sdps['Target'].value_counts().get('Enrolled', 0) / len(sdps) * 100)
 
         with col1:
             st.markdown(f"""
@@ -978,7 +978,7 @@ try:
 
         st.markdown("<h2 class='section-header'>Student Status Distribution</h2>", unsafe_allow_html=True)
 
-        trgt_cnt = df['Target'].value_counts()
+        trgt_cnt = sdps['Target'].value_counts()
         fig = go.Figure(data=[go.Pie(
             labels=trgt_cnt.index,
             values=trgt_cnt.values,
@@ -1207,19 +1207,19 @@ try:
                 </div>
                 """, unsafe_allow_html=True)
 
-                prob_df = pd.DataFrame({
+                prob_sdps = pd.DataFrame({
                     'Outcome': labenco.classes_,
                     'Probability': xgb_proba * 100
                 })
 
                 fig = go.Figure(data=[go.Bar(
-                    x=prob_df['Outcome'],
-                    y=prob_df['Probability'],
+                    x=prob_sdps['Outcome'],
+                    y=prob_sdps['Probability'],
                     marker=dict(
                         color=[CHRT_COLOR['graduate'], CHRT_COLOR['dropout'], CHRT_COLOR['enrolled']],
                         line=dict(color=CHRT_COLOR['text'], width=1)
                     ),
-                    text=[f'{p:.1f}%' for p in prob_df['Probability']],
+                    text=[f'{p:.1f}%' for p in prob_sdps['Probability']],
                     textposition='outside',
                     textfont=dict(size=14, color=CHRT_COLOR['text'], family='Roboto')
                 )])
@@ -1271,7 +1271,7 @@ try:
 
         with col1:
             st.markdown("### Tuition Payment Impact")
-            tuition_target = pd.crosstab(df['Tuition fees up to date'], df['Target'], normalize='index') * 100
+            tuition_target = pd.crosstab(sdps['Tuition fees up to date'], sdps['Target'], normalize='index') * 100
             fig = px.bar(
                 tuition_target,
                 barmode='group',
@@ -1289,7 +1289,7 @@ try:
         with col2:
             st.markdown("### Academic Performance Distribution")
             fig = px.box(
-                df,
+                sdps,
                 x='Target',
                 y='Curricular units 1st sem (grade)',
                 color='Target',
@@ -1310,7 +1310,7 @@ try:
 
         st.markdown("### Age Distribution Analysis")
         fig = px.histogram(
-            df,
+            sdps,
             x='Age at enrollment',
             color='Target',
             nbins=25,
