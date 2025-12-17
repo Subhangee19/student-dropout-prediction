@@ -135,3 +135,7 @@ Thumbs.db
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Documentation files (not needed for deployment)
+DEPLOYMENT.md
+QUICK_START.md
