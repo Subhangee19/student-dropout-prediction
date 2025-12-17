@@ -13,6 +13,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+import warnings
+warnings.filterwarnings('ignore')
+
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
@@ -26,7 +29,6 @@ st.markdown("""
         background: linear-gradient(135deg, #0a1929 0%, #1a2332 50%, #0a1929 100%);
     }
 
-    /* Hide Streamlit branding */
     footer {visibility: hidden;}
     header {visibility: hidden;}
 
@@ -855,14 +857,10 @@ window.addEventListener('load', async function() {
 
 @st.cache_resource
 def load_models():
-    with open('xgboost_model.pkl', 'rb') as f:
-        xgb_model = pickle.load(f)
-    with open('baseline_model.pkl', 'rb') as f:
-        baseline_model = pickle.load(f)
-    with open('scaler.pkl', 'rb') as f:
-        scaler = pickle.load(f)
-    with open('label_encoder.pkl', 'rb') as f:
-        label_encoder = pickle.load(f)
+    xgb_model = pickle.load(open('xgboost_model.pkl', 'rb'))
+    baseline_model = pickle.load(open('baseline_model.pkl', 'rb'))
+    scaler = pickle.load(open('scaler.pkl', 'rb'))
+    label_encoder = pickle.load(open('label_encoder.pkl', 'rb'))
     return xgb_model, baseline_model, scaler, label_encoder
 
 @st.cache_data
@@ -870,15 +868,15 @@ def load_dataset():
     return pd.read_csv('cleaned_dataset.csv')
 
 CHART_COLORS = {
-    'primary': '#d4af37',      # Gold (main accent)
-    'secondary': '#b8941f',    # Dark gold
-    'tertiary': '#8b7355',     # Bronze/brown
-    'light_gold': '#f4d03f',   # Light gold
-    'background': '#0a1929',   # Dark navy
-    'text': '#cbd5e1',         # Light gray
-    'graduate': '#d4af37',     # Gold for Graduate (best outcome)
-    'dropout': '#6b5d4f',      # Dark brown for Dropout (neutral)
-    'enrolled': '#94a3b8'      # Light gray for Enrolled (neutral)
+    'primary': '#d4af37',      
+    'secondary': '#b8941f',    
+    'tertiary': '#8b7355',     
+    'light_gold': '#f4d03f',   
+    'background': '#0a1929',   
+    'text': '#cbd5e1',         
+    'graduate': '#d4af37',     
+    'dropout': '#6b5d4f',      
+    'enrolled': '#94a3b8'      
 }
 
 st.markdown("""
@@ -1121,7 +1119,7 @@ try:
                     "Course/Program",
                     list(course_options.keys()),
                     format_func=lambda x: course_options[x],
-                    index=11  # Default to Nursing (most common)
+                    index=11  
                 )
             with col2:
                 prev_qual_options = {
@@ -1266,7 +1264,7 @@ try:
                     </div>
                     """, unsafe_allow_html=True)
 
-    else:  # Analytics
+    else:  
         st.markdown("<h2 class='section-header'>Data Analytics Dashboard</h2>", unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
