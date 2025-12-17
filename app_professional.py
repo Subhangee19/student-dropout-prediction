@@ -856,18 +856,18 @@ window.addEventListener('load', async function() {
 """
 
 @st.cache_resource
-def load_models():
-    xgb_model = pickle.load(open('xgboost_model.pkl', 'rb'))
-    baseline_model = pickle.load(open('baseline_model.pkl', 'rb'))
-    scaler = pickle.load(open('scaler.pkl', 'rb'))
-    label_encoder = pickle.load(open('label_encoder.pkl', 'rb'))
-    return xgb_model, baseline_model, scaler, label_encoder
+def loadmo():
+    xgbmo = pickle.load(open('xgbmo.pkl', 'rb'))
+    basmo = pickle.load(open('basmo.pkl', 'rb'))
+    scal = pickle.load(open('scal.pkl', 'rb'))
+    labenco = pickle.load(open('labenco.pkl', 'rb'))
+    return xgbmo, basmo, scal, labenco
 
 @st.cache_data
-def load_dataset():
+def loadds():
     return pd.read_csv('cleaned_dataset.csv')
 
-CHART_COLORS = {
+CHRT_COLOR = {
     'primary': '#d4af37',      
     'secondary': '#b8941f',    
     'tertiary': '#8b7355',     
@@ -887,8 +887,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 try:
-    xgb_model, baseline_model, scaler, label_encoder = load_models()
-    df = load_dataset()
+    xgbmo, basmo, scal, labenco = loadmo()
+    df = loadds()
 
     with st.sidebar:
         st.markdown("<h2 style='color: #d4af37; text-align: center; margin-bottom: 2rem;'>NAVIGATION</h2>", unsafe_allow_html=True)
@@ -914,14 +914,14 @@ try:
     if page == "Home":
         col1, col2, col3 = st.columns(3)
 
-        dropout_rate = (df['Target'].value_counts().get('Dropout', 0) / len(df) * 100)
-        grad_rate = (df['Target'].value_counts().get('Graduate', 0) / len(df) * 100)
-        enrolled_rate = (df['Target'].value_counts().get('Enrolled', 0) / len(df) * 100)
+        drp_rt = (df['Target'].value_counts().get('Dropout', 0) / len(df) * 100)
+        grd_rt = (df['Target'].value_counts().get('Graduate', 0) / len(df) * 100)
+        enrl_rt = (df['Target'].value_counts().get('Enrolled', 0) / len(df) * 100)
 
         with col1:
             st.markdown(f"""
             <div class="metric-card">
-                <div class="metric-value">{dropout_rate:.1f}%</div>
+                <div class="metric-value">{drp_rt:.1f}%</div>
                 <div class="metric-label">Dropout Rate</div>
             </div>
             """, unsafe_allow_html=True)
@@ -929,7 +929,7 @@ try:
         with col2:
             st.markdown(f"""
             <div class="metric-card">
-                <div class="metric-value">{grad_rate:.1f}%</div>
+                <div class="metric-value">{grd_rt:.1f}%</div>
                 <div class="metric-label">Graduation Rate</div>
             </div>
             """, unsafe_allow_html=True)
@@ -937,7 +937,7 @@ try:
         with col3:
             st.markdown(f"""
             <div class="metric-card">
-                <div class="metric-value">{enrolled_rate:.1f}%</div>
+                <div class="metric-value">{enrl_rt:.1f}%</div>
                 <div class="metric-label">Enrolled Rate</div>
             </div>
             """, unsafe_allow_html=True)
@@ -978,14 +978,14 @@ try:
 
         st.markdown("<h2 class='section-header'>Student Status Distribution</h2>", unsafe_allow_html=True)
 
-        target_counts = df['Target'].value_counts()
+        trgt_cnt = df['Target'].value_counts()
         fig = go.Figure(data=[go.Pie(
-            labels=target_counts.index,
-            values=target_counts.values,
+            labels=trgt_cnt.index,
+            values=trgt_cnt.values,
             hole=0.4,
             marker=dict(
-                colors=[CHART_COLORS['graduate'], CHART_COLORS['dropout'], CHART_COLORS['enrolled']],
-                line=dict(color=CHART_COLORS['background'], width=2)
+                colors=[CHRT_COLOR['graduate'], CHRT_COLOR['dropout'], CHRT_COLOR['enrolled']],
+                line=dict(color=CHRT_COLOR['background'], width=2)
             ),
             textfont=dict(size=16, color='white', family='Roboto'),
             textposition='inside'
@@ -994,13 +994,13 @@ try:
             height=450,
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color=CHART_COLORS['text'], size=14, family='Roboto'),
+            font=dict(color=CHRT_COLOR['text'], size=14, family='Roboto'),
             showlegend=True,
             legend=dict(
                 bgcolor='rgba(30, 41, 59, 0.8)',
                 bordercolor='#334155',
                 borderwidth=1,
-                font=dict(color=CHART_COLORS['text'])
+                font=dict(color=CHRT_COLOR['text'])
             )
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -1188,10 +1188,10 @@ try:
                     'Unemployment rate', 'Inflation rate', 'GDP'
                 ])
 
-                input_scaled = scaler.transform(input_data)
-                xgb_pred = xgb_model.predict(input_scaled)[0]
-                xgb_proba = xgb_model.predict_proba(input_scaled)[0]
-                xgb_result = label_encoder.inverse_transform([xgb_pred])[0]
+                input_scaled = scal.transform(input_data)
+                xgb_pred = xgbmo.predict(input_scaled)[0]
+                xgb_proba = xgbmo.predict_proba(input_scaled)[0]
+                xgb_result = labenco.inverse_transform([xgb_pred])[0]
 
                 st.markdown("---")
                 st.markdown("<h2 class='section-header'>Prediction Result</h2>", unsafe_allow_html=True)
@@ -1208,7 +1208,7 @@ try:
                 """, unsafe_allow_html=True)
 
                 prob_df = pd.DataFrame({
-                    'Outcome': label_encoder.classes_,
+                    'Outcome': labenco.classes_,
                     'Probability': xgb_proba * 100
                 })
 
@@ -1216,12 +1216,12 @@ try:
                     x=prob_df['Outcome'],
                     y=prob_df['Probability'],
                     marker=dict(
-                        color=[CHART_COLORS['graduate'], CHART_COLORS['dropout'], CHART_COLORS['enrolled']],
-                        line=dict(color=CHART_COLORS['text'], width=1)
+                        color=[CHRT_COLOR['graduate'], CHRT_COLOR['dropout'], CHRT_COLOR['enrolled']],
+                        line=dict(color=CHRT_COLOR['text'], width=1)
                     ),
                     text=[f'{p:.1f}%' for p in prob_df['Probability']],
                     textposition='outside',
-                    textfont=dict(size=14, color=CHART_COLORS['text'], family='Roboto')
+                    textfont=dict(size=14, color=CHRT_COLOR['text'], family='Roboto')
                 )])
 
                 fig.update_layout(
@@ -1229,29 +1229,29 @@ try:
                     height=400,
                     paper_bgcolor='rgba(0,0,0,0)',
                     plot_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color=CHART_COLORS['text'], size=12, family='Roboto'),
+                    font=dict(color=CHRT_COLOR['text'], size=12, family='Roboto'),
                     yaxis_title="Probability (%)",
                     xaxis_title="Outcome",
                     showlegend=False,
-                    title_font=dict(color=CHART_COLORS['primary'], size=16)
+                    title_font=dict(color=CHRT_COLOR['primary'], size=16)
                 )
                 st.plotly_chart(fig, use_container_width=True)
 
-                risk_factors = []
+                rsk_fact = []
                 if tuition_fees == 0:
-                    risk_factors.append("Outstanding tuition fees identified")
+                    rsk_fact.append("Outstanding tuition fees identified")
                 if curricular_units_1st_sem_grade < 10:
-                    risk_factors.append("Below average academic performance")
+                    rsk_fact.append("Below average academic performance")
                 if scholarship == 0 and tuition_fees == 0:
-                    risk_factors.append("Financial instability detected")
+                    rsk_fact.append("Financial instability detected")
                 if debtor == 1:
-                    risk_factors.append("Student has outstanding debts")
+                    rsk_fact.append("Student has outstanding debts")
                 if curricular_units_1st_sem_approved < curricular_units_1st_sem_enrolled * 0.7:
-                    risk_factors.append("Low course completion rate in first semester")
+                    rsk_fact.append("Low course completion rate in first semester")
 
-                if risk_factors:
+                if rsk_fact:
                     st.markdown("<h3 class='section-header'>Risk Factors</h3>", unsafe_allow_html=True)
-                    for factor in risk_factors:
+                    for factor in rsk_fact:
                         st.markdown(f"""
                         <div class="warning-box">
                             <p style='color: #cbd5e1; font-size: 1rem; margin: 0; font-weight: 500;'>{factor}</p>
@@ -1275,13 +1275,13 @@ try:
             fig = px.bar(
                 tuition_target,
                 barmode='group',
-                color_discrete_sequence=[CHART_COLORS['graduate'], CHART_COLORS['dropout'], CHART_COLORS['enrolled']]
+                color_discrete_sequence=[CHRT_COLOR['graduate'], CHRT_COLOR['dropout'], CHRT_COLOR['enrolled']]
             )
             fig.update_layout(
                 height=400,
                 paper_bgcolor='rgba(0,0,0,0)',
                 plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(color=CHART_COLORS['text'], size=12, family='Roboto'),
+                font=dict(color=CHRT_COLOR['text'], size=12, family='Roboto'),
                 yaxis_title="Percentage (%)"
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -1294,16 +1294,16 @@ try:
                 y='Curricular units 1st sem (grade)',
                 color='Target',
                 color_discrete_map={
-                    'Graduate': CHART_COLORS['graduate'],
-                    'Dropout': CHART_COLORS['dropout'],
-                    'Enrolled': CHART_COLORS['enrolled']
+                    'Graduate': CHRT_COLOR['graduate'],
+                    'Dropout': CHRT_COLOR['dropout'],
+                    'Enrolled': CHRT_COLOR['enrolled']
                 }
             )
             fig.update_layout(
                 height=400,
                 paper_bgcolor='rgba(0,0,0,0)',
                 plot_bgcolor='rgba(0,0,0,0)',
-                font=dict(color=CHART_COLORS['text'], size=12, family='Roboto'),
+                font=dict(color=CHRT_COLOR['text'], size=12, family='Roboto'),
                 yaxis_title="Grade"
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -1315,16 +1315,16 @@ try:
             color='Target',
             nbins=25,
             color_discrete_map={
-                'Graduate': CHART_COLORS['graduate'],
-                'Dropout': CHART_COLORS['dropout'],
-                'Enrolled': CHART_COLORS['enrolled']
+                'Graduate': CHRT_COLOR['graduate'],
+                'Dropout': CHRT_COLOR['dropout'],
+                'Enrolled': CHRT_COLOR['enrolled']
             }
         )
         fig.update_layout(
             height=400,
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color=CHART_COLORS['text'], size=12, family='Roboto')
+            font=dict(color=CHRT_COLOR['text'], size=12, family='Roboto')
         )
         st.plotly_chart(fig, use_container_width=True)
 

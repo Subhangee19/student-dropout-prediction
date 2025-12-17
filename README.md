@@ -57,10 +57,10 @@ An AI-powered decision-support system that predicts student dropout risk using m
 ```text
 BigData&AI/
 ├── app_professional.py        # Main Streamlit application
-├── xgboost_model.pkl          # Trained XGBoost model
-├── baseline_model.pkl         # Trained Logistic Regression model
-├── scaler.pkl                 # Feature scaler
-├── label_encoder.pkl          # Label encoder
+├── xgbmo.pkl                  # Trained XGBoost model
+├── basmo.pkl                  # Trained Logistic Regression model
+├── scal.pkl                   # Feature scaler
+├── labenco.pkl                # Label encoder
 ├── cleaned_dataset.csv        # Preprocessed dataset
 ├── requirements.txt           # Python dependencies
 ├── README.md                  # This file
