@@ -6,7 +6,7 @@ AI-Powered Early Intervention & Risk Assessment Platform
 
 ## Overview
 
-This project implements an AI-driven decision-support system for predicting student dropout risk in higher education institutions. Using machine learning and interactive web technologies, the system enables proactive early intervention strategies to improve student retention and graduation rates.
+Nowadays with the growing generation, student dropout has become a global educational challenge that has far-reaching consequences around various groups of stakeholders. There are various issues related to student dropout- students face career setbacks, an increase in financial burden as a result of unpaid tuition debt, universities lose students resulting in revenue loss and face decreasing institutional reputation, governments contend with lower rates of graduation which also impacts upon workforce readiness and economy oriented productivity. These issues are not really looked upon and the intervention methods that are currently being used are not effective as such and quite generalized thus, failing to identify at-risk students before they lose interest from their academic progress.
 
 ## Features
 
@@ -19,7 +19,7 @@ This project implements an AI-driven decision-support system for predicting stud
 ## Demo
 
 - **Live Application**: [https://student-dropout-predictions.streamlit.app](https://student-dropout-predictions.streamlit.app)
-- **Video Demo**: [Link to demonstration video]
+- **Video Demo**: [[Link to demonstration video](https://www.youtube.com/watch?v=UX7LX5w26hU)]
 
 ## Dataset
 
@@ -78,15 +78,15 @@ streamlit run app_professional.py
 
 ```
 student-dropout-prediction/
-├── app_professional.py       # Main Streamlit application
-├── requirements.txt          # Python dependencies
+├── app_professional.py       
+├── requirements.txt          
 ├── .streamlit/
-│   └── config.toml          # Streamlit configuration
-├── xgbmo.pkl                # Trained XGBoost model
-├── basmo.pkl                # Baseline Logistic Regression model
-├── scal.pkl                 # Feature scaler
-├── labenco.pkl              # Label encoder
-└── cleaned_dataset.csv      # Preprocessed dataset
+│   └── config.toml         
+├── xgbmo.pkl                
+├── basmo.pkl                
+├── scal.pkl                 
+├── labenco.pkl             
+└── cleaned_dataset.csv     
 ```
 
 ## Key Findings
